@@ -33,7 +33,7 @@ Route::get('/delete', function () {
 });
 
 Route::get('/readAll', function () {
-   $posts =  \App\Post::all();
+    $posts = \App\Post::all();
 //   foreach ($posts as $post) {
 //      echo $post;
 //   }
@@ -47,13 +47,13 @@ Route::get('/find/{id}', function ($id) {
 });
 
 Route::get('/tasks/{id}', function ($id) {
-   $task = DB::table('posts')->find($id);
+    $task = DB::table('posts')->find($id);
 //   dd($task);
-   return $task->title;
+    return $task->title;
 });
 
 Route::get('/find', function () {
-    $find = \App\Post::find([1,5,6]);
+    $find = \App\Post::find([1, 5, 6]);
     return $find;
 });
 
@@ -84,12 +84,12 @@ Route::get('updateDemo', function () {
 });
 
 Route::get('create', function () {
-    $post = Post::create(['title'=>'ASPDotNet language 2', 'content'=>'ASPDotNet is also good 2']);
+    $post = Post::create(['title' => 'ASPDotNet language 2', 'content' => 'ASPDotNet is also good 2']);
     echo $post;
 });
 
 Route::get('massUpdate', function () {
-    $post = Post::where('is_admin', 0) -> where('title', 'AspDotNet') -> update(['title'=>'AspDotNet', 'content'=>'AspDotNet is program language develop by MS']);
+    $post = Post::where('is_admin', 0)->where('title', 'AspDotNet')->update(['title' => 'AspDotNet', 'content' => 'AspDotNet is program language develop by MS']);
     return $post;
 });
 
@@ -109,17 +109,17 @@ Route::get('softDelete', function () {
     echo $post->delete();
 });
 
-Route::get('forceDelete',function () {
+Route::get('forceDelete', function () {
     $post = Post::withTrashed()->where('id', 12)->forceDelete();
     return $post;
 });
 
 Route::get('withTrash', function () {
-   $post = Post::withTrashed()->get();
+    $post = Post::withTrashed()->get();
 //   $post = Post::get();
 //    $post = Post::onlyTrashed()->get();
 //   $post = Post::where('is_admin',0)->get();
-   return $post;
+    return $post;
 });
 
 Route::get('restore', function () {
@@ -129,8 +129,69 @@ Route::get('restore', function () {
 
 //One to One relationship
 Route::get('/user/{id}/post', function ($id) {
-    return User::find($id)->post;
+    return User::find($id)->post->content;
+});
 
+Route::get('/post/{id}/user', function ($id) {
+    return Post::find($id)->user->name;
+});
+
+Route::get('/posts', function () {
+    $user = User::find(1);
+    foreach ($user->posts as $post) {
+        echo $post->title . '</br>';
+    }
+});
+
+Route::get('/user/{id}/roles', function ($id) {
+//   $user = User::find($id);
+//   foreach ($user->roles as $role) {
+//       echo $role->name . "</br>";
+//   }
+
+   $roles = User::find($id)->roles()->orderBy('name','desc')->get();
+
+   foreach ($roles as $role) {
+       echo $role->name . '</br>';
+   }
+});
+
+Route::get('role/{id}/user', function ($id){
+    $role = \App\Role::find($id);
+    foreach ($role->users as $user) {
+        echo $role->name . ' ' . $user->name . '</br>';
+    }
+});
+
+Route::get('user/pivot', function () {
+   $user = User::find(1);
+   foreach ($user->roles as $role) {
+       echo $role->pivot;
+   }
+});
+//Has Many Through
+Route::get('user/country', function () {
+   $country = \App\Country::find(2);
+   foreach ($country->posts as $post) {
+       echo $post->title . '</br>';
+   }
+});
+
+//Polymorphic Relations
+Route::get('user/photos', function () {
+    $user = User::find(3);
+//    echo $user;
+    foreach ($user->photos as $photo) {
+        echo $photo->path;
+    }
+});
+//Polymorphic Relations
+Route::get('post/photos', function () {
+    $post = Post::find(2);
+//    echo $user;
+    foreach ($post->photos as $photo) {
+        echo $photo->path;
+    }
 });
 
 //Route::get('/post/{id}/{name}', function ($id, $name) {
@@ -143,13 +204,13 @@ Route::get('/user/{id}/post', function ($id) {
 //}));
 
 
-Route::get('post/{id}/{name}/{password}', 'PostsController@showPost');
-
-Route::resource('posts', 'PostsController');
-
-Route::get('contact', 'PostsController@contact');
-
-Route::get('/insert', function () {
-//    DB::insert('insert into posts(title, content) values(?, ?)',['PHP with Laravel 1', 'Laravel is the best thing that has happened to PHP 1']);
-    DB::table('posts')->insert(['title'=>'PHP with Laravel', 'content'=>'Laravel is the best thing that has happened to PHP']);
-});
+//Route::get('post/{id}/{name}/{password}', 'PostsController@showPost');
+//
+//Route::resource('posts', 'PostsController');
+//
+//Route::get('contact', 'PostsController@contact');
+//
+//Route::get('/insert', function () {
+////    DB::insert('insert into posts(title, content) values(?, ?)',['PHP with Laravel 1', 'Laravel is the best thing that has happened to PHP 1']);
+//    DB::table('posts')->insert(['title'=>'PHP with Laravel', 'content'=>'Laravel is the best thing that has happened to PHP']);
+//});

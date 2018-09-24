@@ -33,4 +33,17 @@ class User extends Authenticatable
         return $this->hasOne('App\Post');  //by default this will find user_id (foreign_key) in Post model
         //https://laravel.com/docs/5.7/eloquent-relationships
     }
+
+    public function posts() {
+        return $this->hasMany('App\Post');
+    }
+
+    public function roles() {
+//        return $this->belongsToMany('App\Role');
+        return $this->belongsToMany('App\Role')->withPivot('created_at');
+    }
+
+    public function photos() {
+        return $this->morphMany('App\Photo','imageable');
+    }
 }
