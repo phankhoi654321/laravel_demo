@@ -194,6 +194,20 @@ Route::get('post/photos', function () {
     }
 });
 
+Route::get('photo/{id}/user', function ($id) {
+    $photo = \App\Photo::findOrFail($id);
+    $imageable = $photo->imageable;
+    echo $imageable->name;
+});
+
+//Polymorphic Relations - many to many
+Route::get('/post/tag', function () {
+   $post = Post::find(1);
+   foreach ($post->tags as $tag) {
+       echo $tag->name;
+   }
+});
+
 //Route::get('/post/{id}/{name}', function ($id, $name) {
 //    return "This is the post number: " . $id . " : " . $name;
 //});
